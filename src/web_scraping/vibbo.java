@@ -68,21 +68,30 @@ public class vibbo
             String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
             
 
-            String url = "https://www.vibbo.com/pisos-y-casas-toda-espana/?ca=0_s&fPos=148&fOn=sb_location";
+            //String url = "https://www.vibbo.com/pisos-y-casas-toda-espana/?ca=0_s&fPos=148&fOn=sb_location";
+            String url = "https://www.bolsar.com/VistasDL/PaginaIntradiarioEspecies.aspx?Especie=DGCU2&Vto=3&utm_source=transactional&utm_medium=email&utm_content=es_AR&utm_campaign=notification_message";
             System.out.println("Conectado a: " + url);
             //driver.get(url);
-           // page = webClient.getPage(url);
+            page = webClient.getPage(url);
+            
             int timeout = 10000;
-            Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(timeout).get();
+            //Document doc = Jsoup.connect(url).userAgent(USER_AGENT).timeout(timeout).get();
 
             //System.out.println(doc.html());
-            //System.out.println(page.asXml());
-            //Document doc = Jsoup.parse(page.asXml());
+            System.out.println(page.asXml());
+            /*Document doc = Jsoup.parse(page.asXml());
             
-            Elements a = doc.select("div[class=flipper]").select("a.subjectTitle");
+            //Elements a = doc.select("div[class=flipper]").select("a.subjectTitle");
+            Elements texto = doc.select("span[class=textoMenuTop]");
             
-            Elements b = doc.select("div[class=result_container_center]");
-            
+            for (Element eb : texto) {
+                System.out.println(eb);                   
+            }
+            //System.out.println(texto);
+            //System.out.println("1: " + doc.getElementsByClass("textoMenuTop").html() );
+            //System.out.println("2: " +doc.getElementById("ctl00_ContentPlaceHolder1_lblUltimo"));
+            //Elements b = doc.select("div[class=result_container_center]");
+            /*
             ArrayList<Object> links = new ArrayList();
             int i = 0;
             for (Element element : a)
@@ -144,7 +153,7 @@ public class vibbo
 
                 j++;
                 }/**/
-                
+                /*
                 System.out.println("----------------------------------------------");
                 System.out.println();
                 

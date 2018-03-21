@@ -54,7 +54,6 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import org.apache.commons.logging.LogFactory;
-
 /**
  *
  * @author Pc
@@ -242,10 +241,13 @@ public class resultados implements Runnable{
                     System.out.println("Conectando a:" +  link.getUrl());
                     info = Jsoup.connect(link.getUrl()).userAgent(USER_AGENT).timeout(timeout).get();
 
-                    titulo = info.select("h1.txt-bold").text();
-                    precio = info.select("span.txt-big.txt-bold").first().text();
+                    //titulo = info.select("h1.txt-bold").text();
+                    titulo = info.select("h2.txt-body > span").text();
+                    //precio = info.select("span.txt-big.txt-bold").first().text();
+                    precio = info.select("span.txt-bold").first().text();
                     descripcion = info.select("div.adCommentsLanguage.expandable").text();
-                    vendedor = info.select("div.advertiser-data.txt-soft > p").first().text();
+                    //vendedor = info.select("div.advertiser-data.txt-soft > p").first().text();
+                    vendedor = info.select("div.advertiser-info > p").first().text();
                     telefono = info.select("p.txt-bold._browserPhone.icon-phone").text();
                     //vendedor = info.select("a.about-advertiser-name").text();
                     
@@ -585,7 +587,7 @@ public class resultados implements Runnable{
         
         posicion = url.indexOf("?pagina=");  
         //System.out.println(url.substring((posicion + 4), (posicion + 5)));
-            
+            System.out.println(url);
             if(posicion >= 0){
                 pag = Integer.parseInt(url.substring((posicion + 8), (posicion + 9)));
                 url = url.substring(0, (posicion-2)); 
@@ -621,15 +623,20 @@ public class resultados implements Runnable{
         
         try {
             links.clear();
-            //System.out.println("conectando " + url);
-            doc = Jsoup.connect(nextUrl).userAgent(USER_AGENT).timeout(timeout).get();
-
+            System.out.println("conectando " + nextUrl);
+            //doc = Jsoup.connect(nextUrl).userAgent(USER_AGENT).timeout(timeout).get();
+            page = webClient.getPage(nextUrl);
+            //doc = Jsoup.parse(page.asXml());
+            System.out.println(page.asXml());
+            
             do{
                 int i = 1;
 
                 if(isHiloIniciado()){
-                    doc = Jsoup.connect(nextUrl).userAgent(USER_AGENT).timeout(timeout).get();
-
+                    //page = webClient.getPage(nextUrl);
+                    doc = Jsoup.parse(page.asXml());
+                    //doc = Jsoup.connect(nextUrl).userAgent(USER_AGENT).timeout(timeout).get();
+                    System.out.println(doc.html());
                     Elements articles = doc.select("div.aditem-detail > a");
 
                     for (Element element : articles) {
@@ -1458,41 +1465,6 @@ public class resultados implements Runnable{
                    System.out.println("Excepción al obtener el HTML de la página" + ex.getMessage());
                }
        return doc;
-   }
-   
-   
-   public Document getHTMLAJAXDOCUMENT(String url){
-        try {
-            java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
-            LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-            
-            java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
-            java.util.logging.Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
-            
-            
-            WebClient webClient = new WebClient(BrowserVersion.CHROME);
-            webClient.getOptions().setCssEnabled(false);
-            webClient.getOptions().setJavaScriptEnabled(true);
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
-            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-            webClient.setCssErrorHandler(new com.gargoylesoftware.htmlunit.SilentCssErrorHandler());
-            webClient.waitForBackgroundJavaScript(10000);
-            
-            page = webClient.getPage(url);
-            
-            modal = Jsoup.parse(page.asXml());
-            
-            
-            
-            
-        } catch (IOException ex) {
-            Logger.getLogger(resultados.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FailingHttpStatusCodeException ex) {
-            Logger.getLogger(resultados.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
-        return modal;
-        
    }
 
     public int cantindadPublicaciones(){ 
